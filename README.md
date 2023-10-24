@@ -52,30 +52,35 @@ Step 5: - Copy and paste the code from below which will download the necessary f
     - Set the `--snapshot` argument to `True` to view model outputs in a `visualization` folder automatically created in your Google Drive.
     - Another folder named `submission` will be generated. After testing, upload files from `submission` to the UPENN website mentioned earlier to obtain dice scores.
 
+## IMPORTANT NOTES
 
-IMPORTANT NOTES
-1.	The original link of the dataset can be found from here: - https://ipp.cbica.upenn.edu/
-2.	We downloaded the dataset from the above link itself after creating an account and filling out all the details for the TransBTS 2020 dataset. It may take 2-3 days to get the approval.
-3.	The links KiTS and the LiTS dataset can be found here: 
-KiTS19: - https://github.com/neheller/kits19
-LiTS17: - https://competitions.codalab.org/competitions/17094
-4.	We have not uploaded the datasets and the trained models for the KiTS and LiTS on our Google Drive unlike the Brats2020 because of memory limitations on our drive. So, for training and testing on these datasets you would need to download them explicitly and compress the datasets and then upload them.
-5.	Each of the datasets combined training and validation are at least up to 70 Gigs or more. Hence to upload them on our drive or other platforms we had to use a lossless compression algorithm since there is not enough space and bandwidth to upload them in pickle format. (More explanation in the video).
-6.	We mostly trained on the Agave cluster platform during which we had to create our own anaconda environment and then run the train and test files. The code required is the same for training and testing except you would be required to change the directories of datasets to access them accordingly. (More explanation in the video).
-7.	The files pertaining to the model code are as follows: IntmdSequential.py, PositionalEncoding.py, TransBTS_downsample8x_skipconnection.py, Transformer.py, and Unet_skipconnection.py
+### Datasets
+- The **TransBTS 2020** dataset original link: [https://ipp.cbica.upenn.edu/](https://ipp.cbica.upenn.edu/)
+  - We obtained the dataset from the link after registering. Approval might take 2-3 days.
+- Links for **KiTS19** and **LiTS17** datasets:
+  - **KiTS19**: [https://github.com/neheller/kits19](https://github.com/neheller/kits19)
+  - **LiTS17**: [https://competitions.codalab.org/competitions/17094](https://competitions.codalab.org/competitions/17094)
+- Due to storage restrictions on Google Drive, we haven't uploaded the KiTS and LiTS datasets or their trained models like we did with Brats2020. You'll need to download, compress, and then upload these datasets yourself.
+- The datasets (training + validation) are large, each totaling about 70GB or more. Due to space and bandwidth constraints, we employed a lossless compression algorithm instead of using pickle format. Further details are provided in the associated video.
+- Training was predominantly executed on the Agave cluster platform. We set up our anaconda environment and then ran the training and testing files. Adjust dataset directory paths as needed. More details in the video.
 
+### Model Code Files
+- Relevant files: `IntmdSequential.py`, `PositionalEncoding.py`, `TransBTS_downsample8x_skipconnection.py`, `Transformer.py`, and `Unet_skipconnection.py`
 
-Code snippet for converting data from pickle to bz2 compression
+### Data Compression & Conversion
+1. Convert `.nii.gz` files to `.pkl`. This has been outlined on the GitHub repo. Run `preprocess.py` from the TransBTS main directory. Update the `root` directories accordingly in `preprocess.py`.
+   - For **LiTS**: Unzip `.nii.zip` files first and then convert to `.nii.gz` using the gzip library before passing them to `preprocess.py`.
+   - For **KiTS**: The dataset is in `.nii.gz` format by default.
+2. Execute `data_compression.py` from the 'Codes' directory. This converts `.pkl` to `.bz2` (applies compression). Update directory paths as required.
 
-Step 1: - Convert the .nii.gz files to .pkl files. This step has actually been mentioned on the GitHub repository itself. You need to run the preprocess.py file from the TransBTS main folder. Please make sure to change the ‘root’ argument directories which point to the respective dataset folder as mentioned in the preprocess.py file. You can also use this file for the LiTS, KiTS datasets. However, in case of the LiTS dataset the files first need to be unzipped since the extension of these files is nii.zip and then use the gzip library to convert it to nii.gz after which you can pass it to the preprocess.py. For KiTS the dataset is already in .nii.gz format. (.nii.gz format is multi-dimensional neuroimaging data format. In other words, the MRI is usually stored in this format)
-Step 2: - Run the data_compression.py from the ‘Codes’ folder in the given package. This will convert the .pkl files to .bz2 meaning that the compression has been applied. Again, make sure that the directories are changed according to where the dataset lies and where you would like the code to dump the new compressed files.
+> **Note**: Compression is primarily for data transfer across platforms (e.g., local machine, Google Colab, Agave Cluster). It doesn't influence training/testing performance or batch size. Annotated codes reside in the ‘Codes’ folder.
 
-**** It should be noted that the compression is done only to transfer the data between multiple platforms such as local machine, Google Colab, Agave Cluster (ASU specific). It does not have any effect on the performance during training or testing. Also, it does not have any affiliation with the batch size during training. ***
-*** Annotated codes can be found in the ‘Codes’ folder. In the train_test_codes_on_colab.py the same codes mentioned above for installing libraries, training, and testing on Google Colab can be found except they are annotated. ***
+### Saving Intermediary Images
+1. Substitute `TransBTS_downsample8x_skipconnection.py` in `TransBTS-main/models/` with our annotated version.
+2. Run the training script as usual. Images will be saved to the specified directory.
 
-Code snippet saving intermediary images 
+> **Editing Tip**: For modifying saved images, navigate to line 229. This segment manages image creation. Adjust to modify image slices or to show encoded/decoded images.
 
-Step 1: Replace TransBTS_downsample8x_skipconnection.py in the TransBTS-main/models/ directory with our annotated version.
-Step 2: Run the train file normally and images will be saved within the directory 
+---
 
-*** To edit the images being displayed go to line 229. This is the block of code that manages the creation of images. Here one can change the slice of the image being saved as well as to display the encoding or decoded images. ***
+*All the provided steps and code snippets, including library installation, training, and testing on Google Colab, are annotated and available in `train_test_codes_on_colab.py`.*
