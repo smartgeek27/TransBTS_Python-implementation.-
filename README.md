@@ -18,28 +18,39 @@ Step 4: - Open a new Google Colab notebook and link it to your drive.
 
 Step 5: - Copy and paste the code from below which will download the necessary files and libraries for training and testing.
 
-######################
-!pip uninstall torch
-!pip install torch==1.6.0 torchvision
-!pip install setproctitle
-!pip install tensorboardx
-!pip install pickle5
-#go to /usr/local/lib/python3.7/dist-packages/pandas/io/pickle.py and change the first line as "import pickle5 as pickle" instead of just "import pickle"
-######################
+## Installation & Setup
 
-After this, run the cell and make sure you edit the pickle file as mentioned in the last line of the above code. Press the CTRL key and hover over the directory of the pickle file and the cursor will change to a hand with the index finger out. Then right click and the file will open and then edit the first line as mentioned above.
+1. **Library Installation**
+    ```bash
+    !pip uninstall torch 
+    !pip install torch==1.6.0 torchvision 
+    !pip install setproctitle 
+    !pip install tensorboardx 
+    !pip install pickle5 
+    ```
+    > **Note**: After installation, ensure you edit the `pickle` file as instructed below:
+    Navigate to `/usr/local/lib/python3.7/dist-packages/pandas/io/pickle.py` and modify the first line to `import pickle5 as pickle`.
 
-Step 6: - Run the below code in another cell and the training will start. 
-!python -m torch.distributed.launch --nproc_per_node=1 /content/drive/MyDrive/TransBTS-main/train.py --resume_dir '/content/drive/MyDrive/TransBTS-main/checkpoint/TransBTS2022-03-29/model_epoch_935.pth' --load=True --save_freq=1 --num_workers=2 --batch_size=4 --train_dir '/content/drive/MyDrive/MICCAI_BraTS2020_TrainingData' --valid_dir '/content/drive/MyDrive/MICCAI_BraTS2020_ValidationData' --train_file '/content/drive/MyDrive/TransBTS-main/train.txt' --valid_file '/content/drive/MyDrive/TransBTS-main/valid.txt'
-*** Remove --resume_dir  and --load arguments if you are gonna start training from the first epoch! ***
+2. **Training**
+    ```bash
+    !python -m torch.distributed.launch --nproc_per_node=1 /content/drive/MyDrive/TransBTS-main/train.py --resume_dir '/content/drive/MyDrive/TransBTS-main/checkpoint/TransBTS2022-03-29/model_epoch_935.pth' --load=True --save_freq=1 --num_workers=2 --batch_size=4 --train_dir '/content/drive/MyDrive/MICCAI_BraTS2020_TrainingData' --valid_dir '/content/drive/MyDrive/MICCAI_BraTS2020_ValidationData' --train_file '/content/drive/MyDrive/TransBTS-main/train.txt' --valid_file '/content/drive/MyDrive/TransBTS-main/valid.txt'
+    ```
+    > **Note**: Remove `--resume_dir` and `--load` arguments if you are starting training from the first epoch!
 
-Step 7: - After the training is completed the models trained will be put in the folder named ‘checkpoint’ inside the TransBTS main folder. Also logs for every epoch you train can be found in a .txt file in the ‘log’ folder of TransBTS main folder.
+3. **Post-Training**
+    - After training completion, trained models will be saved in the `checkpoint` folder inside the `TransBTS` main directory.
+    - Epoch logs can be found in the `log` directory of `TransBTS` main folder.
 
-Step 8: - We use the validation dataset for testing since the dataset does not have a separate testing dataset as this dataset is a part of an international level competition. So, after training is over and you train a model which now lies in the checkpoint folder, you can now test it on the validation dataset. Run the below code for testing.
-!python  /content/drive/MyDrive/TransBTS-main/test.py --snapshot=False --post_process=False --load_file '/content/drive/MyDrive/TransBTS-main/checkpoint/TransBTS2022-03-29/model_epoch_935.pth' --num_workers=2 --output_dir='/content/drive/MyDrive/' --valid_dir '/content/drive/MyDrive/MICCAI_BraTS2020_ValidationData' --valid_file '/content/drive/MyDrive/TransBTS-main/valid.txt'
-*** Make sure you put the correct directory in place of the ‘--load_file’ argument which is the directory to the trained model in the ‘checkpoint’ folder! ***
+4. **Testing**
+    - The validation dataset is utilized for testing (as there's no separate testing dataset for this competition).
+    ```bash
+    !python /content/drive/MyDrive/TransBTS-main/test.py --snapshot=False --post_process=False --load_file '/content/drive/MyDrive/TransBTS-main/checkpoint/TransBTS2022-03-29/model_epoch_935.pth' --num_workers=2 --output_dir='/content/drive/MyDrive/' --valid_dir '/content/drive/MyDrive/MICCAI_BraTS2020_ValidationData' --valid_file '/content/drive/MyDrive/TransBTS-main/valid.txt'
+    ```
+    > **Note**: Ensure the correct directory for the `--load_file` argument, pointing to the trained model in the `checkpoint` folder.
 
-Step 9: - If you make the –snapshot argument to True you can see the outputs of the model in a folder called ‘visualization’ which will now be created in your Google Drive automatically. Also, there would be another folder named ‘submission’. After the testing is over the files from the submission can now be uploaded to the UPENN website mentioned above to get the dice scores.
+5. **Visualization and Submission**
+    - Set the `--snapshot` argument to `True` to view model outputs in a `visualization` folder automatically created in your Google Drive.
+    - Another folder named `submission` will be generated. After testing, upload files from `submission` to the UPENN website mentioned earlier to obtain dice scores.
 
 
 IMPORTANT NOTES
